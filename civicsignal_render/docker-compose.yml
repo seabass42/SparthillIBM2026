@@ -1,0 +1,24 @@
+# Local development database for CivicSignal. Start it with `docker compose up -d`.
+# The credentials below are development-only defaults; never reuse them anywhere shared.
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: civicsignal-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: civicsignal
+      MYSQL_USER: civicsignal
+      MYSQL_PASSWORD: civicsignal_dev
+      MYSQL_ROOT_PASSWORD: civicsignal_root_dev
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-3307}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-ucivicsignal", "-pcivicsignal_dev"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  mysql-data:

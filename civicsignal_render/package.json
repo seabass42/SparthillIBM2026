@@ -1,0 +1,17 @@
+{
+  "name": "civicsignal",
+  "private": true,
+  "version": "0.1.0",
+  "description": "CivicSignal San José local demo",
+  "main": "server.js",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/flow.test.js",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down"
+  },
+  "dependencies": {
+    "mysql2": "^3.11.0"
+  }
+}

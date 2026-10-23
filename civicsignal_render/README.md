@@ -14,6 +14,19 @@ Copy `.env.example` to `.env.local` and set `CIVICSIGNAL_ADMIN_PASSWORD` there. 
 
 The key shared in chat has not been copied into files. Because it was exposed in conversation, rotate it and use an inference-scoped replacement when the API contract is available.
 
+## MySQL database (Docker)
+
+A local MySQL 8.4 database runs in Docker so every teammate has the same setup. You need Docker Desktop and Node.js 18+.
+
+1. From this folder, run `npm install` to get the `mysql2` driver.
+2. Run `docker compose up -d` (or `npm run db:up`). This creates an empty `civicsignal` database, kept in the `mysql-data` Docker volume between restarts.
+3. Copy the `MYSQL_*` lines from `.env.example` into your `.env.local`.
+4. Run `node server.js`. The startup log should say `MySQL: connected`, and <http://127.0.0.1:4173/api/health> reports `"database":"connected"`.
+
+The container listens on `127.0.0.1:3307`, so it won't clash with a MySQL already installed on 3306. To use a different port, set `MYSQL_PORT` both in your shell when running `docker compose` and in `.env.local`. The credentials in `docker-compose.yml` are for local development only. Run `docker compose down` to stop the database, or `docker compose down -v` to also delete its data.
+
+If `MYSQL_HOST` is empty, the app runs without a database, as before. The hosted demo never connects to one. Reports are still saved to `data/reports.json` for now; the database has no tables yet.
+
 ## Data and testing
 
 The real tracker file is `data/reports.json`; it is ignored by Git because records may contain precise locations. Back it up before clearing or migrating data. For isolated tests, set `CIVICSIGNAL_REPORTS_FILE` to a separate absolute JSON path. You may also set `PORT` to avoid the default `4173`.
